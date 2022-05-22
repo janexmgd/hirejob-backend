@@ -1,7 +1,7 @@
 const express = require("express");
 
 // import jwtauth
-const jwtAuth = require("../middlewares/jwtAuth");
+const jwtAuth = require("../middlewares/JWTauth");
 
 // import authorization
 const { isWorker } = require("../middlewares/authorization");
