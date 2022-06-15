@@ -13,9 +13,9 @@ const db = new Pool({
   password: PG_PASSWORD,
   database: PG_DATABASE,
   port: PG_PORT,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  // ssl: {
+  //   rejectUnauthorized: false,
+  // },
 });
 
 // check connection

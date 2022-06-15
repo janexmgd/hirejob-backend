@@ -1,6 +1,20 @@
 const db = require("../config/pg");
 
 const authModel = {
+  recruiterNameCheck: (name) => {
+    return new Promise((resolve, reject) => {
+      db.query(
+        `SELECT * FROM recruiter WHERE name='${name}'`,
+        (err, result) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+          }
+          resolve(result);
+        }
+      );
+    });
+  },
   nameCheck: (name) => {
     return new Promise((resolve, reject) => {
       db.query(`SELECT * FROM worker WHERE name='${name}'`, (err, result) => {
@@ -36,6 +50,30 @@ const authModel = {
             reject(err);
           }
 
+          resolve(result);
+        }
+      );
+    });
+  },
+  registerRecruiterData: (data) => {
+    return new Promise((resolve, reject) => {
+      const {
+        recruiterId,
+        name,
+        companyName,
+        position,
+        phone,
+        image,
+        authid,
+        isActive,
+      } = data;
+      db.query(
+        `INSERT INTO recruiter(id,name,company_name,position,phone,image,auth_id,is_active)
+        VALUES('${recruiterId}','${name}','${companyName}','${position}','${phone}','${image}','${authid}',${isActive})`,
+        (err, result) => {
+          if (err) {
+            reject(err);
+          }
           resolve(result);
         }
       );
@@ -97,6 +135,19 @@ const authModel = {
       );
     });
   },
+  recruiterActiveCheck: (authId) => {
+    return new Promise((resolve, reject) => {
+      db.query(
+        `SELECT * FROM recruiter WHERE auth_id='${authId}'`,
+        (err, res) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(res);
+        }
+      );
+    });
+  },
   authWorkerData: (authId) => {
     return new Promise((resolve, reject) => {
       db.query(
@@ -107,6 +158,22 @@ const authModel = {
             reject(err);
           }
           resolve(result);
+        }
+      );
+    });
+  },
+  authRecruiterData: (authId) => {
+    return new Promise((resolve, reject) => {
+      db.query(
+        `SELECT auth.id AS authId, auth.email AS email, auth.password AS password, auth.level, auth.verify_code,
+        recruiter.id AS recruiterId, recruiter.company_name , recruiter.position, recruiter.phone, recruiter.company_field, recruiter.kota, recruiter.instagram,
+        recruiter.linkedin, recruiter.company_description, recruiter.auth_id, recruiter.is_active, recruiter.image
+        FROM auth INNER JOIN recruiter ON auth.id = recruiter.auth_id WHERE auth.id='${authId}'`,
+        (err, res) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(res);
         }
       );
     });

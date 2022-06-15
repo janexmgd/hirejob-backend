@@ -1,7 +1,7 @@
 const { failed } = require("../helpers/response");
 
 module.exports = {
-  isCompany: (req, res, next) => {
+  isRecruiter: (req, res, next) => {
     if (req.APP_DATA.tokenDecoded.level === 1) {
       next();
     } else {

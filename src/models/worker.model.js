@@ -99,10 +99,17 @@ const workerModel = {
       );
     });
   },
-  workerUpdateData: (id, jobdesk, domisli, tempatKerja, workerDescription) => {
+  workerUpdateData: (
+    id,
+    name,
+    jobdesk,
+    domisli,
+    tempatKerja,
+    workerDescription
+  ) => {
     return new Promise((resolve, reject) => {
       db.query(
-        `UPDATE worker SET jobdesk='${jobdesk}',domisli='${domisli}',tempat_kerja='${tempatKerja}',worker_description='${workerDescription}', updated_at=NOW() WHERE id='${id}'`,
+        `UPDATE worker SET name='${name}', jobdesk='${jobdesk}',domisli='${domisli}',tempat_kerja='${tempatKerja}',worker_description='${workerDescription}', updated_at=NOW() WHERE id='${id}'`,
         (err, result) => {
           if (err) {
             reject(err);
@@ -135,7 +142,7 @@ const workerModel = {
       );
     });
   },
-  workerData: (id) => {
+  workerPortoData: (id) => {
     return new Promise((resolve, reject) => {
       db.query(
         `SELECT * FROM portofolio WHERE worker_id='${id}'`,

@@ -24,7 +24,22 @@ module.exports = {
         modeQuery,
       };
       const goQuery = await workerModel.workerActiveData(data);
-      if (goQuery.rowCount === 0) {
+      // return console.log(goQuery.rows);
+      const combData = await Promise.all(
+        goQuery.rows.map(async (item) => {
+          const skill = await workerModel.workerSkillData(item.id);
+          const workExp = await workerModel.workerWorkExpData(item.id);
+          const porto = await workerModel.workerPortoData(item.id);
+          obj = {
+            user: item,
+            skill: skill.rows,
+            workExp: workExp.rows,
+            porto: porto.rows,
+          };
+          return obj;
+        })
+      );
+      if (combData.length === 0) {
         const err = {
           message: `data not found`,
         };
@@ -37,16 +52,17 @@ module.exports = {
         return;
       }
       if (search) {
+        // return console.log(combData);
         const pagination = {
           currentPage: pageValue,
           dataPerPage: limitValue,
-          totalPage: Math.ceil(goQuery.rowCount / limitValue),
+          totalPage: Math.ceil(combData.rowCount / limitValue),
         };
         success(res, {
           code: 200,
           status: "success",
           message: `Success get data worker`,
-          data: goQuery.rows,
+          data: combData,
           pagination: pagination,
         });
       } else {
@@ -60,7 +76,7 @@ module.exports = {
           code: 200,
           status: "success",
           message: `Success get data worker`,
-          data: goQuery.rows,
+          data: combData,
           pagination: pagination,
         });
       }
@@ -90,11 +106,20 @@ module.exports = {
         });
         return;
       }
+      const skill = await workerModel.workerSkillData(data.rows[0].id);
+      const workExp = await workerModel.workerWorkExpData(data.rows[0].id);
+      const porto = await workerModel.workerPortoData(data.rows[0].id);
+      const combdata = {
+        user: data.rows[0],
+        skill: skill.rows,
+        workExp: workExp.rows,
+        porto: porto.rows,
+      };
       success(res, {
         code: 200,
         status: "success",
         message: `Success get Worker with id ${id}`,
-        data: data.rows[0],
+        data: combdata,
         paggination: [],
       });
     } catch (error) {
@@ -145,6 +170,7 @@ module.exports = {
     try {
       const id = req.APP_DATA.tokenDecoded.workerid;
       const {
+        name,
         jobdesk,
         domisli,
         tempatKerja,
@@ -152,28 +178,35 @@ module.exports = {
         skill,
         workExp,
       } = req.body;
-      if (skill.length > 0) {
-        skill.map(async (item) => {
-          const skillId = uuidv4();
-          await workerModel.addSkill(skillId, item, id);
-        });
+
+      if (skill) {
+        if (skill.length > 0) {
+          skill.map(async (item) => {
+            const skillId = uuidv4();
+            await workerModel.addSkill(skillId, item, id);
+          });
+        }
       }
-      if (workExp.length > 0) {
-        workExp.map(async (item) => {
-          const workExpId = uuidv4();
-          const { posisi, companyName, monthYear, workDescription } = item;
-          await workerModel.addWorkExp(
-            workExpId,
-            id,
-            posisi,
-            companyName,
-            monthYear,
-            workDescription
-          );
-        });
+      if (workExp) {
+        if (workExp.length > 0) {
+          workExp.map(async (item) => {
+            const workExpId = uuidv4();
+            const { posisi, companyName, monthYear, workDescription } = item;
+            await workerModel.addWorkExp(
+              workExpId,
+              id,
+              posisi,
+              companyName,
+              monthYear,
+              workDescription
+            );
+          });
+        }
       }
+
       await workerModel.workerUpdateData(
         id,
+        name,
         jobdesk,
         domisli,
         tempatKerja,

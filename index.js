@@ -17,12 +17,15 @@ const authRoute = require("./src/routes/auth.route");
 const workerRoute = require("./src/routes/worker.route");
 const portoRoute = require("./src/routes/portofolio.route");
 const workExpRoute = require("./src/routes/workExperience.route");
+const recruiterRoute = require("./src/routes/recruiter.route");
 
 const app = express();
+
 app.use(
-  helmet({
-    crossOriginResourcePolicy: false,
-  })
+	helmet({
+		crossOriginEmbedderPolicy: false,
+		crossOriginResourcePolicy: false,
+	})
 );
 
 app.use(xssClean());
@@ -34,8 +37,12 @@ app.use(authRoute);
 app.use(workerRoute);
 app.use(portoRoute);
 app.use(workExpRoute);
+app.use(recruiterRoute);
 
 app.use(express.static("public"));
+app.get("/", (req, res) => {
+	res.json("HELLO WORLD");
+});
 app.listen(LISTEN_PORT, () => {
-  console.log(`${APP_NAME} RUN at port ${LISTEN_PORT}`);
+	console.log(`${APP_NAME} RUN at port ${LISTEN_PORT}`);
 });

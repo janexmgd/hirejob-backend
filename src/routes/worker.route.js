@@ -22,7 +22,7 @@ const workerUpload = require("../middlewares/workerUploads");
 
 const router = express.Router();
 router
-  .get("/worker", jwtAuth, isWorker, workerActive) // get all worker with status active
+  .get("/worker", jwtAuth, workerActive) // get all worker with status active
   .get("/worker/:id", jwtAuth, workerDetail) // get detail worker
   .put("/worker-photo", jwtAuth, isWorker, workerUpload, workerPhoto) // worker update photo
   .put("/worker", jwtAuth, isWorker, workerUpdate) // for update worker,skill, and experience
