@@ -5,6 +5,7 @@ module.exports = {
 	APP_NAME: process.env.APP_NAME,
 	LISTEN_PORT: process.env.LISTEN_PORT,
 	APP_HOST: process.env.APP_HOST,
+	PORT: process.env.PORT,
 	// database
 	PG_HOST: process.env.PG_HOST,
 	PG_USER: process.env.PG_USER,

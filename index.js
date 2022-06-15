@@ -1,5 +1,5 @@
 // import env
-const { APP_NAME, LISTEN_PORT, APP_HOST } = require("./src/helpers/env");
+const { APP_NAME, LISTEN_PORT, APP_HOST, PORT } = require("./src/helpers/env");
 // importexpressjs
 const express = require("express");
 // import cors
@@ -44,8 +44,8 @@ app.get("/", (req, res) => {
 	res.json("HELLO WORLD");
 });
 
-const port = LISTEN_PORT || 4001;
+const port = PORT || 4001;
 const host = APP_HOST || "0.0.0.0";
-app.listen(port, host, () => {
-	console.log(`${APP_NAME} RUN at port ${port}`);
+app.listen(port, "0.0.0.0", () => {
+	console.log(`${APP_NAME} RUN`);
 });
