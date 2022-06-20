@@ -110,6 +110,7 @@ module.exports = {
 				return;
 			}
 		} catch (error) {
+			return console.log(error)
 			failed(res, {
 				code: 400,
 				status: "Failed",
